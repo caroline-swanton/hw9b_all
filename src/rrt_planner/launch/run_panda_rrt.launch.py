@@ -11,18 +11,23 @@ def generate_launch_description():
         .to_moveit_configs()
     )
 
+    # Pipeline settings use the ROS 2 Jazzy (MoveIt 2.10+) parameter names
     rrt_pipeline_params = {
         "planning_pipelines": ["rrt"],
+        "default_planning_pipeline": "rrt",
         "rrt": {
-            "planning_plugin": "RrtPlannerPlugin/RrtPlannerManager",
-            "request_adapters": (
-                "default_planner_request_adapters/FixWorkspaceBounds "
-                "default_planner_request_adapters/FixStartStateBounds "
-                "default_planner_request_adapters/FixStartStateCollision "
-                "default_planner_request_adapters/FixStartStatePathConstraints "
-                "default_planner_request_adapters/ResolveConstraintFrames "
-                "default_planner_request_adapters/AddTimeOptimalParameterization"
-            ),
+            "planning_plugins": ["RrtPlannerPlugin/RrtPlannerManager"],
+            "request_adapters": [
+                "default_planning_request_adapters/ResolveConstraintFrames",
+                "default_planning_request_adapters/ValidateWorkspaceBounds",
+                "default_planning_request_adapters/CheckStartStateBounds",
+                "default_planning_request_adapters/CheckStartStateCollision",
+            ],
+            "response_adapters": [
+                "default_planning_response_adapters/AddTimeOptimalParameterization",
+                "default_planning_response_adapters/ValidateSolution",
+                "default_planning_response_adapters/DisplayMotionPath",
+            ],
         },
     }
 
